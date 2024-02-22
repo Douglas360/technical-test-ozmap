@@ -1,11 +1,14 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
+import * as dotenv from "dotenv";
+dotenv.config();
 
-const env = {
-  MONGO_URI: 'mongodb://root:example@127.0.0.1:27021/oz-tech-test?authSource=admin',
-};
-
-const init = async function() {
-  await mongoose.connect(env.MONGO_URI);
+const init = async function () {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI as string);
+    console.log("Connected to MongoDB");
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export default init();
