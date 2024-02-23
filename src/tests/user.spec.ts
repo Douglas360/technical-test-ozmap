@@ -48,6 +48,46 @@ describe("UserController", () => {
       });
     });
   });
+  describe("getAllUsers", () => {
+    it("should get all users", async () => {
+      const usersMock = [
+        { name: "User 1", email: "user1@example.com" },
+        { name: "User 2", email: "user2@example.com" },
+      ];
+
+      // Mock do userService.getAllUsers para retornar uma lista de usuários
+      userService.getAllUsers = jest.fn().mockResolvedValueOnce(usersMock);
+
+      // Executa o método getAllUsers do userController
+      await userController.getAllUsers(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+
+      // Verifica se o status 200 foi chamado e se a lista de usuários foi retornada no json de resposta
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
+      expect(mockResponse.json).toHaveBeenCalledWith(usersMock);
+    });
+  });
+  describe("getUserById", () => {
+    it("should get user by id", async () => {
+      const userId = "123456";
+      const userMock = { name: "John Doe", email: "john@example.com" };
+
+      // Mock do userService.getUserById para retornar um usuário
+      userService.getUserById = jest.fn().mockResolvedValueOnce(userMock);
+
+      // Executa o método getUserById do userController
+      await userController.getUserById(
+        { params: { userId } } as unknown as Request,
+        mockResponse as Response
+      );
+
+      // Verifica se o status 201 foi chamado e se o usuário foi retornado no json de resposta
+      expect(mockResponse.status).toHaveBeenCalledWith(201);
+      expect(mockResponse.json).toHaveBeenCalledWith(userMock);
+    });
+  });
 });
 
 describe("UserService", () => {
@@ -113,6 +153,54 @@ describe("UserService", () => {
         userService.createUser(userData as User)
       ).rejects.toThrowError(
         "Only one of address or coordinates should be passed!"
+      );
+    });
+  });
+  describe("getAllUsers", () => {
+    it("should get all users", async () => {
+      const usersMock = [
+        { name: "User 1", email: "user1@example.com" },
+        { name: "User 2", email: "user2@example.com" },
+      ];
+
+      // Mock do UserModel.find para retornar uma lista de usuários
+      UserModel.find = jest.fn().mockResolvedValueOnce(usersMock);
+
+      const users = await userService.getAllUsers();
+
+      expect(users).toEqual(usersMock);
+      expect(UserModel.find).toHaveBeenCalled();
+    });
+  });
+  describe("getUserById", () => {
+    it("should get user by id", async () => {
+      const userId = "123456";
+      const userMock = { name: "John Doe", email: "john@example.com" };
+
+      // Mock do UserModel.findById para retornar um usuário
+      UserModel.findById = jest.fn().mockResolvedValueOnce(userMock);
+
+      const user = await userService.getUserById(userId);
+
+      expect(user).toEqual(userMock);
+      expect(UserModel.findById).toHaveBeenCalledWith(userId);
+    });
+
+    it("should throw an error if user ID is not provided", async () => {
+      const userId = ""; // Empty user ID
+
+      await expect(userService.getUserById(userId)).rejects.toThrowError(
+        "User ID is required!"
+      );
+    });
+
+    it("should throw an error if user is not found", async () => {
+      const userId = "nonexistentUserId";
+      // Mock do UserModel.findById para retornar null (usuário não encontrado)
+      UserModel.findById = jest.fn().mockResolvedValueOnce(null);
+
+      await expect(userService.getUserById(userId)).rejects.toThrowError(
+        "User not found!"
       );
     });
   });

@@ -9,6 +9,7 @@ class UserController {
     this.userService = userService;
     this.createUser = this.createUser.bind(this);
     this.getAllUsers = this.getAllUsers.bind(this);
+    this.getUserById = this.getUserById.bind(this);
   }
 
   async createUser(request: Request, response: Response) {

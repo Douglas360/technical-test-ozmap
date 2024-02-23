@@ -41,10 +41,14 @@ class UserService {
   }
 
   // Obter um usuário por ID
-  async getUserById(userId: string): Promise<User | null> {
+  async getUserById(userId: string): Promise<User> {
     try {
       this.validadeUserID(userId);
       const user = await UserModel.findById(userId);
+
+      if (!user) {
+        throw new CustomError("User not found!", 404);
+      }
       return user;
     } catch (error: any) {
       throw new CustomError(error.message, 400);
