@@ -1,17 +1,13 @@
 import { User, UserModel } from "../models/models";
+import { CustomError } from "../utils/customError";
 import lib from "../utils/lib";
 
 class UserService {
   // Criar um novo usuário
   async createUser(userData: User): Promise<User> {
     try {
-      //Verifica se ambos endereco e coordenadas foram passados
-      if (
-        (userData.address && userData.coordinates) ||
-        (!userData.address && !userData.coordinates)
-      ) {
-        throw new Error("Only one of address or coordinates should be passed!");
-      }
+      // Valida os dados do usuário
+      this.validateUserData(userData);
 
       //Resolve o endereco a partir das coordenadas
       if (userData.coordinates) {
@@ -30,7 +26,7 @@ class UserService {
       const user = await UserModel.create(userData);
       return user;
     } catch (error: any) {
-      throw new Error(error.message);
+      throw new CustomError(error.message, 400);
     }
   }
 
@@ -39,20 +35,19 @@ class UserService {
     try {
       const users = await UserModel.find();
       return users;
-    } catch (error) {
-      console.error("Erro ao obter usuários:", error);
-      return [];
+    } catch (error: any) {
+      throw new CustomError(error.message, 400);
     }
   }
 
   // Obter um usuário por ID
   async getUserById(userId: string): Promise<User | null> {
     try {
+      this.validadeUserID(userId);
       const user = await UserModel.findById(userId);
       return user;
-    } catch (error) {
-      console.error("Erro ao obter usuário por ID:", error);
-      return null;
+    } catch (error: any) {
+      throw new CustomError(error.message, 400);
     }
   }
 
@@ -66,9 +61,8 @@ class UserService {
         new: true,
       });
       return user;
-    } catch (error) {
-      console.error("Erro ao atualizar usuário:", error);
-      return null;
+    } catch (error: any) {
+      throw new CustomError(error.message, 400);
     }
   }
 
@@ -77,9 +71,26 @@ class UserService {
     try {
       await UserModel.findByIdAndDelete(userId);
       return true;
-    } catch (error) {
-      console.error("Erro ao excluir usuário:", error);
-      return false;
+    } catch (error: any) {
+      throw new CustomError(error.message, 400);
+    }
+  }
+
+  private validateUserData(userData: User) {
+    if (
+      (userData.address && userData.coordinates) ||
+      (!userData.address && !userData.coordinates)
+    ) {
+      throw new CustomError(
+        "Only one of address or coordinates should be passed!",
+        400
+      );
+    }
+  }
+
+  private validadeUserID(userId: string) {
+    if (!userId) {
+      throw new CustomError("User ID is required!", 400);
     }
   }
 }

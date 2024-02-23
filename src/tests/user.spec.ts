@@ -47,23 +47,6 @@ describe("UserController", () => {
         email: "john@example.com",
       });
     });
-
-    /*it("should handle errors when creating a user", async () => {
-      // Mock do userService.createUser para retornar null, indicando um erro ao criar o usuário
-      userService.createUser = jest.fn().mockResolvedValueOnce(null);
-
-      // Executa o método createUser do userController
-      await userController.createUser(
-        mockRequest as Request,
-        mockResponse as Response
-      );
-
-      // Verifica se o status 400 foi chamado e se a mensagem de erro foi retornada no json de resposta
-      expect(mockResponse.status).toHaveBeenCalledWith(400);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        error: "Erro ao criar usuário",
-      });
-    });*/
   });
 });
 
@@ -98,29 +81,38 @@ describe("UserService", () => {
       const user = await userService.createUser(userData);
 
       expect(user).toEqual(userData);
+      expect(lib.getAddressFromCoordinates).toHaveBeenCalledWith(
+        userData.coordinates
+      );
+      expect(lib.getCoordinatesFromAddress).toHaveBeenCalledWith(
+        userData.address
+      );
       expect(UserModel.create).toHaveBeenCalledWith(userData);
     });
+    it("should throw an error if both address and coordinates are provided", async () => {
+      const userData = {
+        name: "John Doe",
+        email: "john@example.com",
+        address: "123 Main St",
+        coordinates: [123, 456],
+      };
 
-    it("should return null and log an error when invalid data is provided", async () => {
-      const userData: User = new User();
+      await expect(
+        userService.createUser(userData as User)
+      ).rejects.toThrowError(
+        "Only one of address or coordinates should be passed!"
+      );
+    });
+    it("should throw an error if neither address nor coordinates are provided", async () => {
+      const userData = {
+        name: "John Doe",
+        email: "john@example.com",
+      };
 
-      (userData.name = "John Doe"),
-        (userData.email = "john@example.com"),
-        (userData.address = "123 Main St"),
-        (userData.coordinates = [123, 456]),
-        // Mock para o UserModel.create para lançar um erro
-        (UserModel.create = jest.fn().mockImplementationOnce(() => {
-          throw new Error("Mocked error");
-        }));
-
-      console.error = jest.fn(); // Mock console.error para evitar logs durante o teste
-
-      const user = await userService.createUser(userData);
-
-      expect(user).toBeNull();
-      expect(console.error).toHaveBeenCalledWith(
-        "Erro ao criar usuário:",
-        expect.any(Error)
+      await expect(
+        userService.createUser(userData as User)
+      ).rejects.toThrowError(
+        "Only one of address or coordinates should be passed!"
       );
     });
   });
