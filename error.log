@@ -6,3 +6,11 @@
 {"level":"error","message":"Cannot read properties of undefined (reading 'getUserById')","timestamp":"2024-02-23T13:47:07.520Z"}
 {"level":"error","message":"Cannot read properties of undefined (reading 'getUserById')","timestamp":"2024-02-23T13:47:10.435Z"}
 {"level":"error","message":"User not found!","timestamp":"2024-02-23T13:48:11.291Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'updateUser')","timestamp":"2024-02-23T14:01:17.801Z"}
+{"level":"error","message":"Only one of address or coordinates should be updated!","timestamp":"2024-02-23T14:13:34.672Z"}
+{"level":"error","message":"User not found!","timestamp":"2024-02-23T16:16:02.037Z"}
+{"level":"error","message":"User not found!","timestamp":"2024-02-23T16:16:52.102Z"}
+{"level":"error","message":"User not found!","timestamp":"2024-02-23T16:18:22.313Z"}
+{"level":"error","message":"User not found!","timestamp":"2024-02-23T16:23:10.274Z"}
+{"level":"error","message":"User not found!","timestamp":"2024-02-23T16:24:42.186Z"}
+{"level":"error","message":"User not found!","timestamp":"2024-02-23T16:31:30.992Z"}

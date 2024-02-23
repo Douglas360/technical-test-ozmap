@@ -56,25 +56,46 @@ class UserService {
   }
 
   // Atualizar um usuário existente
-  async updateUser(
-    userId: string,
-    userData: Partial<User>
-  ): Promise<User | null> {
+  async updateUser(userId: string, userData: Partial<User>): Promise<User> {
     try {
-      const user = await UserModel.findByIdAndUpdate(userId, userData, {
+      this.validateUserDataUpdate(userData);
+      // Se as coordenadas forem fornecidas, atualiza o endereço com base nelas
+      if (userData.coordinates) {
+        userData.address = await lib.getAddressFromCoordinates(
+          userData.coordinates
+        );
+      }
+
+      // Se o endereço for fornecido, atualiza as coordenadas com base nele
+      if (userData.address) {
+        const { lat, lon } = await lib.getCoordinatesFromAddress(
+          userData.address
+        );
+        userData.coordinates = [lat, lon];
+      }
+      // Atualiza o usuário no banco de dados
+      const updatedUser = await UserModel.findByIdAndUpdate(userId, userData, {
         new: true,
       });
-      return user;
+
+      return updatedUser;
     } catch (error: any) {
       throw new CustomError(error.message, 400);
     }
   }
 
   // Excluir um usuário
-  async deleteUser(userId: string): Promise<boolean> {
+  async deleteUser(userId: string) {
     try {
-      await UserModel.findByIdAndDelete(userId);
-      return true;
+      this.validateUserDelete(userId);
+
+      const deletedUser = await UserModel.findByIdAndDelete(userId);
+
+      if (!deletedUser) {
+        throw new CustomError("User not found!", 404);
+      }
+
+      return { message: "User deleted successfully" };
     } catch (error: any) {
       throw new CustomError(error.message, 400);
     }
@@ -91,8 +112,24 @@ class UserService {
       );
     }
   }
-
   private validadeUserID(userId: string) {
+    if (!userId) {
+      throw new CustomError("User ID is required!", 400);
+    }
+  }
+  private validateUserDataUpdate(userData: Partial<User>) {
+    // Verifica se a atualização inclui tanto endereço quanto coordenadas, o que não é permitido
+    if (
+      (userData.address && userData.coordinates) ||
+      (!userData.address && !userData.coordinates)
+    ) {
+      throw new CustomError(
+        "Only one of address or coordinates should be updated!",
+        400
+      );
+    }
+  }
+  private validateUserDelete(userId: string) {
     if (!userId) {
       throw new CustomError("User ID is required!", 400);
     }

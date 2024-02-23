@@ -10,6 +10,8 @@ class UserController {
     this.createUser = this.createUser.bind(this);
     this.getAllUsers = this.getAllUsers.bind(this);
     this.getUserById = this.getUserById.bind(this);
+    this.updateUser = this.updateUser.bind(this);
+    this.deleteUser = this.deleteUser.bind(this);
   }
 
   async createUser(request: Request, response: Response) {
@@ -46,9 +48,9 @@ class UserController {
   async deleteUser(request: Request, response: Response) {
     const { userId } = request.params;
 
-    await this.userService.deleteUser(userId);
+    const user = await this.userService.deleteUser(userId);
 
-    return response.status(204).send();
+    return response.status(204).json(user);
   }
 }
 

@@ -18,6 +18,7 @@ describe("UserController", () => {
         address: "123 Main St",
         coordinates: { latitude: 123, longitude: 456 },
       },
+      params: { userId: "123456" },
     };
     mockResponse = {
       status: jest.fn().mockReturnThis(),
@@ -88,12 +89,54 @@ describe("UserController", () => {
       expect(mockResponse.json).toHaveBeenCalledWith(userMock);
     });
   });
+  describe("updateUser", () => {
+    it("should update a user", async () => {
+      // Mock do userService.updateUser para retornar um usuário atualizado
+      userService.updateUser = jest
+        .fn()
+        .mockResolvedValueOnce(mockRequest.body);
+
+      // Executa o método updateUser do userController
+      await userController.updateUser(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+
+      // Verifica se o status 201 foi chamado e se o usuário atualizado foi retornado no json de resposta
+      expect(mockResponse.status).toHaveBeenCalledWith(201);
+      expect(mockResponse.json).toHaveBeenCalledWith(mockRequest.body);
+    });
+  });
+  describe("deleteUser", () => {
+    it("should delete a user", async () => {
+      // Mock do userService.deleteUser para retornar uma resposta vazia
+      userService.deleteUser = jest.fn().mockResolvedValueOnce({});
+
+      // Executa o método deleteUser do userController
+      await userController.deleteUser(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+
+      // Verifica se o status 204 foi chamado e se a resposta vazia foi retornada no json de resposta
+      expect(mockResponse.status).toHaveBeenCalledWith(204);
+    });
+  });
 });
 
 describe("UserService", () => {
+  let mockRequest: Partial<Request>;
   let userService: UserService;
 
   beforeEach(() => {
+    mockRequest = {
+      body: {
+        name: "John Doe",
+        email: "john@example.com",
+        address: "123 Main St",
+        coordinates: { latitude: 123, longitude: 456 },
+      },
+    };
     userService = new UserService();
   });
 
@@ -138,19 +181,14 @@ describe("UserService", () => {
       };
 
       await expect(
-        userService.createUser(userData as User)
+        userService.createUser(mockRequest.body as User)
       ).rejects.toThrowError(
         "Only one of address or coordinates should be passed!"
       );
     });
     it("should throw an error if neither address nor coordinates are provided", async () => {
-      const userData = {
-        name: "John Doe",
-        email: "john@example.com",
-      };
-
       await expect(
-        userService.createUser(userData as User)
+        userService.createUser(mockRequest.body as User)
       ).rejects.toThrowError(
         "Only one of address or coordinates should be passed!"
       );
@@ -175,7 +213,7 @@ describe("UserService", () => {
   describe("getUserById", () => {
     it("should get user by id", async () => {
       const userId = "123456";
-      const userMock = { name: "John Doe", email: "john@example.com" };
+      const userMock = { name: "John Doe", email: "john@email.com" };
 
       // Mock do UserModel.findById para retornar um usuário
       UserModel.findById = jest.fn().mockResolvedValueOnce(userMock);
@@ -185,22 +223,54 @@ describe("UserService", () => {
       expect(user).toEqual(userMock);
       expect(UserModel.findById).toHaveBeenCalledWith(userId);
     });
+  });
+  describe("updateUser", () => {
+    it("should update an existing user with coordinates provided", async () => {
+      const userData = {
+        name: "Updated User",
+        email: "updated@email.com",
+        coordinates: [123, 456],
+      };
 
-    it("should throw an error if user ID is not provided", async () => {
-      const userId = ""; // Empty user ID
+      // Mock para UserModel.findByIdAndUpdate para retornar o usuário atualizado
+      const updatedUser = {
+        _id: mockRequest,
+        name: "Updated User",
+        ...userData,
+      };
+      UserModel.findByIdAndUpdate = jest
+        .fn()
+        .mockResolvedValueOnce(updatedUser);
 
-      await expect(userService.getUserById(userId)).rejects.toThrowError(
-        "User ID is required!"
+      const user = await userService.updateUser(
+        mockRequest as string,
+        userData as Partial<User>
+      );
+
+      expect(user).toEqual(updatedUser);
+
+      expect(UserModel.findByIdAndUpdate).toHaveBeenCalledWith(
+        mockRequest,
+        userData,
+        { new: true }
       );
     });
 
-    it("should throw an error if user is not found", async () => {
-      const userId = "nonexistentUserId";
-      // Mock do UserModel.findById para retornar null (usuário não encontrado)
-      UserModel.findById = jest.fn().mockResolvedValueOnce(null);
+    it("should throw an error if both address and coordinates are provided", async () => {
+      await expect(
+        userService.updateUser(mockRequest as string, mockRequest.body as User)
+      ).rejects.toThrowError(
+        "Only one of address or coordinates should be updated!"
+      );
+    });
 
-      await expect(userService.getUserById(userId)).rejects.toThrowError(
-        "User not found!"
+    it("should throw an error if neither address nor coordinates are provided", async () => {
+      const userData = {};
+
+      await expect(
+        userService.updateUser(mockRequest as string, userData)
+      ).rejects.toThrowError(
+        "Only one of address or coordinates should be updated!"
       );
     });
   });

@@ -9,5 +9,7 @@ const userController = new UserController(userService);
 router.post("/user", userController.createUser);
 router.get("/user", userController.getAllUsers);
 router.get("/user/:userId", userController.getUserById);
+router.put("/user/:userId", userController.updateUser);
+router.delete("/user/:userId", userController.deleteUser);
 
 export { router };
