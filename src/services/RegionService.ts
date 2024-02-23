@@ -1,15 +1,25 @@
-import { Region, RegionModel } from "../models//models";
+import { Region, RegionModel, UserModel } from "../models//models";
 import { Types } from "mongoose";
+import { CustomError } from "../utils/customError";
 
 class RegionService {
   // Criar uma nova região
-  async createRegion(regionData: Region): Promise<Region | null> {
+  async createRegion(regionData: Region): Promise<Region> {
     try {
+      // Valida os dados da região
+      this.validateRegionData(regionData);
+
+      // Verifica se o usuário existe
+      const userExists = await UserModel.exists({ _id: regionData.user });
+      if (!userExists) {
+        throw new CustomError("User not found", 404);
+      }
+
       const region = await RegionModel.create(regionData);
+
       return region;
-    } catch (error) {
-      console.error("Erro ao criar região:", error);
-      return null;
+    } catch (error: any) {
+      throw new CustomError(error.message, 400);
     }
   }
 
@@ -18,9 +28,8 @@ class RegionService {
     try {
       const regions = await RegionModel.find();
       return regions;
-    } catch (error) {
-      console.error("Erro ao obter regiões:", error);
-      return [];
+    } catch (error: any) {
+      throw new CustomError(error.message, 400);
     }
   }
 
@@ -29,9 +38,8 @@ class RegionService {
     try {
       const region = await RegionModel.findById(regionId);
       return region;
-    } catch (error) {
-      console.error("Erro ao obter região por ID:", error);
-      return null;
+    } catch (error: any) {
+      throw new CustomError(error.message, 400);
     }
   }
 
@@ -45,9 +53,8 @@ class RegionService {
         new: true,
       });
       return region;
-    } catch (error) {
-      console.error("Erro ao atualizar região:", error);
-      return null;
+    } catch (error: any) {
+      throw new CustomError(error.message, 400);
     }
   }
 
@@ -56,9 +63,8 @@ class RegionService {
     try {
       await RegionModel.findByIdAndDelete(regionId);
       return true;
-    } catch (error) {
-      console.error("Erro ao excluir região:", error);
-      return false;
+    } catch (error: any) {
+      throw new CustomError(error.message, 400);
     }
   }
 
@@ -82,9 +88,8 @@ class RegionService {
       });
 
       return regions;
-    } catch (error) {
-      console.error("Erro ao obter regiões contendo um ponto:", error);
-      return [];
+    } catch (error: any) {
+      throw new CustomError(error.message, 400);
     }
   }
 
@@ -112,11 +117,25 @@ class RegionService {
       });
 
       return regions;
-    } catch (error) {
-      console.error("Erro ao obter regiões próximas a um ponto:", error);
-      return [];
+    } catch (error: any) {
+      throw new CustomError(error.message, 400);
+    }
+  }
+
+  private validateRegionData(regionData: Region) {
+    if (!regionData.name) {
+      throw new CustomError("Name is required", 400);
+    }
+    if (!regionData.user) {
+      throw new CustomError("User is required", 400);
+    }
+    if (!regionData.geometry.coordinates) {
+      throw new CustomError("Coordinates is required", 400);
+    }
+    if (!Array.isArray(regionData.geometry.coordinates)) {
+      throw new CustomError("Coordinates must be an array", 400);
     }
   }
 }
 
-export default new RegionService();
+export { RegionService };

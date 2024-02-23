@@ -136,6 +136,7 @@ describe("UserService", () => {
         address: "123 Main St",
         coordinates: { latitude: 123, longitude: 456 },
       },
+      params: { userId: "123456" },
     };
     userService = new UserService();
   });
@@ -271,6 +272,37 @@ describe("UserService", () => {
         userService.updateUser(mockRequest as string, userData)
       ).rejects.toThrowError(
         "Only one of address or coordinates should be updated!"
+      );
+    });
+  });
+  describe("deleteUser", () => {
+    it("should delete a user successfully", async () => {
+      // Mock para UserModel.findByIdAndDelete para retornar o usuário excluído
+
+      UserModel.findByIdAndDelete = jest
+        .fn()
+        .mockResolvedValueOnce(mockRequest.body);
+
+      const result = await userService.deleteUser(mockRequest.params.userId);
+
+      expect(UserModel.findByIdAndDelete).toHaveBeenCalledWith(
+        mockRequest.params.userId
+      );
+      expect(result).toEqual({ message: "User deleted successfully" });
+    });
+
+    it("should throw an error if user is not found", async () => {
+      // Mock para UserModel.findByIdAndDelete para retornar null, indicando que o usuário não foi encontrado
+      UserModel.findByIdAndDelete = jest.fn().mockResolvedValueOnce(null);
+
+      await expect(
+        userService.deleteUser(mockRequest.params.userId)
+      ).rejects.toThrowError("User not found!");
+    });
+
+    it("should throw an error if user ID is not provided", async () => {
+      await expect(userService.deleteUser("")).rejects.toThrowError(
+        "User ID is required!"
       );
     });
   });

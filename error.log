@@ -14,3 +14,24 @@
 {"level":"error","message":"User not found!","timestamp":"2024-02-23T16:23:10.274Z"}
 {"level":"error","message":"User not found!","timestamp":"2024-02-23T16:24:42.186Z"}
 {"level":"error","message":"User not found!","timestamp":"2024-02-23T16:31:30.992Z"}
+{"level":"error","message":"Error to create a region","timestamp":"2024-02-23T17:16:47.665Z"}
+{"level":"error","message":"Error to create a region","timestamp":"2024-02-23T17:19:06.156Z"}
+{"level":"error","message":"Error to create a region","timestamp":"2024-02-23T17:20:35.197Z"}
+{"level":"error","message":"Error to create a region","timestamp":"2024-02-23T17:23:41.431Z"}
+{"level":"error","message":"Error to create a region","timestamp":"2024-02-23T17:26:32.871Z"}
+{"level":"error","message":"User not found!","timestamp":"2024-02-23T17:30:50.724Z"}
+{"level":"error","message":"Error to create a region","timestamp":"2024-02-23T17:31:34.531Z"}
+{"level":"error","message":"Error to create a region","timestamp":"2024-02-23T17:31:56.097Z"}
+{"level":"error","message":"Error to create a region","timestamp":"2024-02-23T17:32:18.440Z"}
+{"level":"error","message":"Error to create a region","timestamp":"2024-02-23T17:32:44.605Z"}
+{"level":"error","message":"Error to create a region-","timestamp":"2024-02-23T17:32:54.895Z"}
+{"level":"error","message":"Error to create a region-","timestamp":"2024-02-23T17:34:48.383Z"}
+{"level":"error","message":"Error to create a region-","timestamp":"2024-02-23T17:35:54.278Z"}
+{"level":"error","message":"Error to create a region-","timestamp":"2024-02-23T17:36:05.098Z"}
+{"level":"error","message":"Error to create a region-","timestamp":"2024-02-23T17:36:57.702Z"}
+{"level":"error","message":"Error to create a region-","timestamp":"2024-02-23T17:39:40.303Z"}
+{"level":"error","message":"Error to create a region-","timestamp":"2024-02-23T17:40:24.469Z"}
+{"level":"error","message":"User not found","timestamp":"2024-02-23T17:41:12.325Z"}
+{"level":"error","message":"User is required","timestamp":"2024-02-23T17:41:40.131Z"}
+{"level":"error","message":"Each coordinate must be an array of length 2","timestamp":"2024-02-23T18:02:03.973Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'coordinates')","timestamp":"2024-02-23T18:43:21.353Z"}

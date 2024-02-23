@@ -73,6 +73,19 @@ export class Region extends Base {
 
   @Prop({ ref: () => User, required: true, type: () => String })
   user: Ref<User>;
+
+  /*@Prop({ required: true })
+  coordinates: number[][][];*/
+  @Prop({ required: true })
+  geometry: {
+    type: {
+      type: String;
+      enum: ["Polygon"];
+      required: true;
+      default: "Polygon";
+    };
+    coordinates: number[][][]; // formato GeoJSON
+  };
 }
 
 export const UserModel = getModelForClass(User);
