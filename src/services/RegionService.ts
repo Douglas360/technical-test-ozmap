@@ -49,6 +49,8 @@ class RegionService {
     regionData: Partial<Region>
   ): Promise<Region | null> {
     try {
+      // Valida os dados da região
+      this.validateRegionUpdateData(regionData);
       const region = await RegionModel.findByIdAndUpdate(regionId, regionData, {
         new: true,
       });
@@ -61,7 +63,13 @@ class RegionService {
   // Excluir uma região
   async deleteRegion(regionId: string): Promise<boolean> {
     try {
-      await RegionModel.findByIdAndDelete(regionId);
+      // Valida o ID da região
+      this.validateRegionDelete(regionId);
+      const deleted = await RegionModel.findByIdAndDelete(regionId);
+      if (!deleted) {
+        throw new CustomError("Region not found", 404);
+      }
+
       return true;
     } catch (error: any) {
       throw new CustomError(error.message, 400);
@@ -69,11 +77,13 @@ class RegionService {
   }
 
   // Listar regiões contendo um ponto específico
-  async getRegionsContainingPoint(
+  async getRegionContainingCoordinates(
     longitude: number,
     latitude: number
   ): Promise<Region[]> {
     try {
+      // Valida as coordenadas
+      this.validateRegionContainingCoordinates(longitude, latitude);
       const point = {
         type: "Point",
         coordinates: [longitude, latitude],
@@ -87,6 +97,10 @@ class RegionService {
         },
       });
 
+      if (regions.length === 0) {
+        throw new CustomError("No regions found", 404);
+      }
+
       return regions;
     } catch (error: any) {
       throw new CustomError(error.message, 400);
@@ -94,27 +108,38 @@ class RegionService {
   }
 
   // Listar regiões a uma certa distância de um ponto
-  async getRegionsNearPoint(
+  async getRegionNearCoordinates(
     longitude: number,
     latitude: number,
     maxDistance: number,
     userId: string | Types.ObjectId
   ): Promise<Region[]> {
     try {
-      const point = {
-        type: "Point",
-        coordinates: [longitude, latitude],
-      };
-
-      const regions = await RegionModel.find({
-        geometry: {
-          $near: {
-            $geometry: point,
-            $maxDistance: maxDistance,
+      // Valida as coordenadas
+      this.validateRegionNearCoordinates(
+        longitude,
+        latitude,
+        maxDistance,
+        userId
+      );
+      const regions = await RegionModel.aggregate([
+        {
+          $geoNear: {
+            near: {
+              type: "Point",
+              coordinates: [longitude, latitude],
+            },
+            distanceField: "distance", // Opcional: armazenar a distância nos resultados
+            maxDistance: maxDistance,
+            spherical: true, // Se aplicável
           },
         },
-        user: userId, // Filtro para regiões pertencentes ao usuário
-      });
+        { $match: { user: userId } }, // Filtrar por usuário após geoNear
+      ]);
+
+      if (regions.length === 0) {
+        throw new CustomError("No regions found", 404);
+      }
 
       return regions;
     } catch (error: any) {
@@ -122,6 +147,7 @@ class RegionService {
     }
   }
 
+  /*METODOS VALIDADORES */
   private validateRegionData(regionData: Region) {
     if (!regionData.name) {
       throw new CustomError("Name is required", 400);
@@ -134,6 +160,56 @@ class RegionService {
     }
     if (!Array.isArray(regionData.geometry.coordinates)) {
       throw new CustomError("Coordinates must be an array", 400);
+    }
+  }
+
+  private validateRegionUpdateData(regionData: Partial<Region>) {
+    if (regionData.name && !regionData.name) {
+      throw new CustomError("Name is required", 400);
+    }
+    if (regionData.user && !regionData.user) {
+      throw new CustomError("User is required", 400);
+    }
+    if (regionData.geometry && !regionData.geometry.coordinates) {
+      throw new CustomError("Coordinates is required", 400);
+    }
+    if (
+      regionData.geometry &&
+      !Array.isArray(regionData.geometry.coordinates)
+    ) {
+      throw new CustomError("Coordinates must be an array", 400);
+    }
+  }
+
+  private validateRegionDelete(regionId: string) {
+    if (!regionId) {
+      throw new CustomError("Region ID is required", 400);
+    }
+  }
+
+  private validateRegionContainingCoordinates(
+    longitude: number,
+    latitude: number
+  ) {
+    if (!longitude || !latitude) {
+      throw new CustomError("Longitude and latitude are required", 400);
+    }
+  }
+
+  private validateRegionNearCoordinates(
+    longitude: number,
+    latitude: number,
+    maxDistance: number,
+    userId: string | Types.ObjectId
+  ) {
+    if (!longitude || !latitude) {
+      throw new CustomError("Longitude and latitude are required", 400);
+    }
+    if (!maxDistance) {
+      throw new CustomError("Max distance is required", 400);
+    }
+    if (!userId) {
+      throw new CustomError("User ID is required", 400);
     }
   }
 }

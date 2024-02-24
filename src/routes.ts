@@ -22,5 +22,9 @@ router.delete("/user/:userId", userController.deleteUser);
 router.post("/region", regionController.createRegion);
 router.get("/region", regionController.getAllRegions);
 router.get("/region/:regionId", regionController.getRegionById);
+router.put("/region/:regionId", regionController.updateRegion);
+router.delete("/region/:regionId", regionController.deleteRegion);
+router.get("/regions", regionController.getRegionContainingCoordinates);
+router.get("/regions/near", regionController.getRegionNearCoordinates);
 
 export { router };

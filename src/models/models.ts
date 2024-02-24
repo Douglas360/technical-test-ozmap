@@ -76,7 +76,10 @@ export class Region extends Base {
 
   /*@Prop({ required: true })
   coordinates: number[][][];*/
-  @Prop({ required: true })
+  @Prop({
+    required: true,
+    index: "2dsphere",
+  })
   geometry: {
     type: {
       type: String;

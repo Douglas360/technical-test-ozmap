@@ -12,6 +12,9 @@ class RegionController {
     this.getRegionById = this.getRegionById.bind(this);
     this.updateRegion = this.updateRegion.bind(this);
     this.deleteRegion = this.deleteRegion.bind(this);
+    this.getRegionContainingCoordinates =
+      this.getRegionContainingCoordinates.bind(this);
+    this.getRegionNearCoordinates = this.getRegionNearCoordinates.bind(this);
   }
 
   async createRegion(request: Request, response: Response) {
@@ -51,6 +54,30 @@ class RegionController {
     const region = await this.regionService.deleteRegion(regionId);
 
     return response.status(204).json(region);
+  }
+
+  async getRegionContainingCoordinates(request: Request, response: Response) {
+    const { latitude, longitude } = request.query;
+
+    const region = await this.regionService.getRegionContainingCoordinates(
+      Number(longitude),
+      Number(latitude)
+    );
+
+    return response.status(200).json(region);
+  }
+
+  async getRegionNearCoordinates(request: Request, response: Response) {
+    const { latitude, longitude, maxDistance, userId } = request.query;
+
+    const region = await this.regionService.getRegionNearCoordinates(
+      Number(longitude),
+      Number(latitude),
+      Number(maxDistance),
+      userId as string
+    );
+
+    return response.status(200).json(region);
   }
 }
 
