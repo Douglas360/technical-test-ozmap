@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import jwt, { SignOptions } from "jsonwebtoken";
 import { RegionController } from "../controllers/RegionController";
 import { RegionService } from "../services/RegionService";
 import { Region, RegionModel, UserModel } from "../models/models";
@@ -39,18 +40,73 @@ describe("RegionController", () => {
     regionController = new RegionController(regionService);
   });
 
+  // Função para gerar um token JWT válido com um ID de usuário
+  function generateValidToken(userId: string): string {
+    // Chave secreta para assinar o token JWT
+    const secretKey = "secret_key_for_testing";
+
+    // Payload do token contendo o ID do usuário
+    const payload = {
+      id: userId,
+      // Você pode adicionar outras informações ao payload, se necessário
+    };
+
+    // Opções de assinatura do token
+    const options: SignOptions = {
+      expiresIn: "1h", // Tempo de expiração do token
+    };
+
+    // Assinatura do token JWT usando a chave secreta e as opções especificadas
+    const token = jwt.sign(payload, secretKey, options);
+
+    return token;
+  }
+
   describe("createRegion", () => {
     it("should return 201 when creating a new region", async () => {
-      const region = new RegionModel(mockRequest.body);
-      jest.spyOn(regionService, "createRegion").mockResolvedValue(region);
+      // Simulando um token JWT válido com um ID de usuário
+      const userId = "user123";
+      const validToken = generateValidToken(userId);
 
+      // Definindo o token JWT válido no cabeçalho de autorização da solicitação simulada
+      mockRequest.headers = { authorization: `Bearer ${validToken}` };
+
+      // Dados do corpo da solicitação
+      const regionData = {
+        name: "Região A",
+        geometry: {
+          type: "Polygon",
+          coordinates: [
+            [
+              [-122.511754, 37.77188],
+              [-122.510133, 37.766956],
+              [-122.513373, 37.76636],
+              [-122.51385, 37.768337],
+              [-122.512286, 37.770247],
+              [-122.511754, 37.77188],
+            ],
+          ],
+        },
+      };
+
+      // Definindo o corpo da solicitação
+      mockRequest.body = regionData;
+
+      // Simulando o comportamento do serviço para criar uma região
+      const createdRegion = new RegionModel(regionData);
+      jest
+        .spyOn(regionService, "createRegion")
+        .mockResolvedValue(createdRegion);
+
+      // Chamando o método createRegion do controlador
       await regionController.createRegion(
         mockRequest as Request,
         mockResponse as Response
       );
 
+      // Verificando se o status e os dados da região criada foram retornados corretamente
       expect(mockResponse.status).toHaveBeenCalledWith(201);
-      expect(mockResponse.json).toHaveBeenCalledWith(region);
+      expect(mockResponse.json).toHaveBeenCalledWith(createdRegion);
     });
   });
   describe("getAllRegions", () => {

@@ -3,6 +3,7 @@ import { UserController } from "../../src/controllers/UserController";
 import { UserService } from "../../src/services/UserService";
 import { User, UserModel } from "../../src/models/models";
 import lib from "../utils/lib";
+import { CustomError } from "../utils/customError";
 
 describe("UserController", () => {
   let mockRequest: Partial<Request>;
@@ -145,10 +146,14 @@ describe("UserService", () => {
     it("should create a new user when valid data is provided", async () => {
       const userData: User = new User();
       userData.name = "John Doe";
-      userData.email = "john@example.com";
+      userData.email = "john23@example.com";
+      userData.password = "123";
       //userData.address = "123 Main St";
       userData.coordinates = [123, 456];
       userData.regions = [];
+
+      // Mock para UserModel.findOne para simular que o usuário não existe
+      UserModel.findOne = jest.fn().mockResolvedValueOnce(null);
 
       // Mock para o lib.getAddressFromCoordinates para retornar o endereço
       lib.getAddressFromCoordinates = jest
@@ -171,8 +176,27 @@ describe("UserService", () => {
       expect(lib.getCoordinatesFromAddress).toHaveBeenCalledWith(
         userData.address
       );
+      expect(UserModel.findOne).toHaveBeenCalledWith({ email: userData.email });
       expect(UserModel.create).toHaveBeenCalledWith(userData);
     });
+    it("should throw an error if user already exists", async () => {
+      const userData: User = new User();
+      userData.name = "John Doe";
+      userData.email = "john23@example.com";
+      userData.password = "123";
+      userData.coordinates = [123, 456];
+      userData.regions = [];
+
+      // Mock para UserModel.findOne para simular que o usuário já existe
+      UserModel.findOne = jest.fn().mockResolvedValueOnce(userData);
+
+      await expect(userService.createUser(userData)).rejects.toThrowError(
+        CustomError
+      );
+
+      expect(UserModel.findOne).toHaveBeenCalledWith({ email: userData.email });
+    });
+
     it("should throw an error if both address and coordinates are provided", async () => {
       const userData = {
         name: "John Doe",

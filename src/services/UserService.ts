@@ -1,3 +1,4 @@
+import { hash } from "bcryptjs";
 import { User, UserModel } from "../models/models";
 import { CustomError } from "../utils/customError";
 import lib from "../utils/lib";
@@ -8,6 +9,12 @@ class UserService {
     try {
       // Valida os dados do usuário
       this.validateUserData(userData);
+
+      // Verifica se o usuário já existe
+      const userExists = await UserModel.findOne({ email: userData.email });
+      if (userExists) {
+        throw new CustomError("User already exists!", 400);
+      }
 
       //Resolve o endereco a partir das coordenadas
       if (userData.coordinates) {
@@ -22,6 +29,10 @@ class UserService {
           userData.address
         );
         userData.coordinates = [lat, lon];
+      }
+
+      if (userData.password) {
+        userData.password = await hash(userData.password, 8);
       }
       const user = await UserModel.create(userData);
       return user;

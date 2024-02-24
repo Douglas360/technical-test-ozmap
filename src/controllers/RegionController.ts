@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { decode } from "jsonwebtoken";
 import { RegionService } from "../services/RegionService";
 import { Region } from "../models/models";
 
@@ -18,7 +19,12 @@ class RegionController {
   }
 
   async createRegion(request: Request, response: Response) {
+    const token = request.headers.authorization?.split(" ")[1];
+    const decodedToken = decode(token as string) as { id: string };
+    const userId = decodedToken.id;
+
     const regionData = request.body;
+    regionData.user = userId;
 
     const region = await this.regionService.createRegion(regionData as Region);
 
