@@ -53,6 +53,105 @@ describe("RegionController", () => {
       expect(mockResponse.json).toHaveBeenCalledWith(region);
     });
   });
+  describe("getAllRegions", () => {
+    it("should return all regions", async () => {
+      const regions: Region[] = [new Region()];
+      jest.spyOn(regionService, "getAllRegions").mockResolvedValue(regions);
+
+      await regionController.getAllRegions(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
+      expect(mockResponse.json).toHaveBeenCalledWith(regions);
+    });
+  });
+  describe("getRegionById", () => {
+    it("should return a region by ID", async () => {
+      const region = new Region();
+      const regionId = "123";
+      mockRequest.params = { regionId };
+      jest.spyOn(regionService, "getRegionById").mockResolvedValue(region);
+
+      await regionController.getRegionById(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+
+      expect(mockResponse.status).toHaveBeenCalledWith(201);
+      expect(mockResponse.json).toHaveBeenCalledWith(region);
+    });
+  });
+  describe("updateRegion", () => {
+    it("should update a region", async () => {
+      const regionId = "123";
+      mockRequest.params = { regionId };
+      jest.spyOn(regionService, "updateRegion").mockResolvedValue(null);
+
+      await regionController.updateRegion(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+
+      expect(mockResponse.status).toHaveBeenCalledWith(201);
+      expect(mockResponse.json).toHaveBeenCalled();
+    });
+  });
+  describe("deleteRegion", () => {
+    it("should delete a region", async () => {
+      const regionId = "123";
+      mockRequest.params = { regionId };
+      jest.spyOn(regionService, "deleteRegion").mockResolvedValue(null);
+
+      await regionController.deleteRegion(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+
+      expect(mockResponse.status).toHaveBeenCalledWith(204);
+      expect(mockResponse.json).toHaveBeenCalled();
+    });
+  });
+  describe("getRegionContainingCoordinates", () => {
+    it("should return regions containing coordinates", async () => {
+      mockRequest.query = { latitude: "37", longitude: "-122" };
+      const regions: Region[] = [new Region()];
+      jest
+        .spyOn(regionService, "getRegionContainingCoordinates")
+        .mockResolvedValue(regions);
+
+      await regionController.getRegionContainingCoordinates(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
+      expect(mockResponse.json).toHaveBeenCalledWith(regions);
+    });
+  });
+  describe("getRegionNearCoordinates", () => {
+    it("should return regions near coordinates", async () => {
+      mockRequest.query = {
+        latitude: "37",
+        longitude: "-122",
+        maxDistance: "1000",
+        userId: "123",
+      };
+      const regions: Region[] = [new Region()];
+      jest
+        .spyOn(regionService, "getRegionNearCoordinates")
+        .mockResolvedValue(regions);
+
+      await regionController.getRegionNearCoordinates(
+        mockRequest as Request,
+        mockResponse as Response
+      );
+
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
+      expect(mockResponse.json).toHaveBeenCalledWith(regions);
+    });
+  });
 });
 
 describe("RegionService", () => {
@@ -124,6 +223,194 @@ describe("RegionService", () => {
       await expect(
         regionService.createRegion(invalidRegionData as any)
       ).rejects.toThrowError(new CustomError("User is required", 400));
+    });
+  });
+  describe("getAllRegions", () => {
+    it("should return all regions", async () => {
+      const regions: Region[] = [new Region()];
+
+      jest.spyOn(RegionModel, "find").mockResolvedValueOnce(regions as any);
+
+      const result = await regionService.getAllRegions();
+
+      expect(result).toEqual(regions);
+    });
+
+    it("should throw an error if retrieval fails", async () => {
+      jest
+        .spyOn(RegionModel, "find")
+        .mockRejectedValueOnce(new Error("Database error"));
+
+      await expect(regionService.getAllRegions()).rejects.toThrowError(
+        CustomError
+      );
+    });
+  });
+  describe("getRegionById", () => {
+    it("should return a region by ID", async () => {
+      const regionId = "123";
+      const region = new Region();
+
+      jest.spyOn(RegionModel, "findById").mockResolvedValueOnce(region as any);
+
+      const result = await regionService.getRegionById(regionId);
+
+      expect(result).toEqual(region);
+    });
+
+    it("should return null if region is not found", async () => {
+      const regionId = "123";
+
+      jest.spyOn(RegionModel, "findById").mockResolvedValueOnce(null);
+
+      const result = await regionService.getRegionById(regionId);
+
+      expect(result).toBeNull();
+    });
+
+    it("should throw an error if retrieval fails", async () => {
+      const regionId = "123";
+
+      jest
+        .spyOn(RegionModel, "findById")
+        .mockRejectedValueOnce(new Error("Database error"));
+
+      await expect(regionService.getRegionById(regionId)).rejects.toThrowError(
+        CustomError
+      );
+    });
+  });
+  describe("updateRegion", () => {
+    it("should update a region", async () => {
+      const regionId = "123";
+      const regionData = { name: "Região B" };
+      const updatedRegion = new Region();
+
+      jest
+        .spyOn(RegionModel, "findByIdAndUpdate")
+        .mockResolvedValueOnce(updatedRegion as any);
+
+      const result = await regionService.updateRegion(regionId, regionData);
+
+      expect(result).toEqual(updatedRegion);
+    });
+
+    it("should return null if region is not found", async () => {
+      const regionId = "123";
+      const regionData = { name: "Região B" };
+
+      jest.spyOn(RegionModel, "findByIdAndUpdate").mockResolvedValueOnce(null);
+
+      const result = await regionService.updateRegion(regionId, regionData);
+
+      expect(result).toBeNull();
+    });
+
+    it("should throw an error if update fails", async () => {
+      const regionId = "123";
+      const regionData = { name: "Região B" };
+
+      jest
+        .spyOn(RegionModel, "findByIdAndUpdate")
+        .mockRejectedValueOnce(new Error("Database error"));
+
+      await expect(
+        regionService.updateRegion(regionId, regionData)
+      ).rejects.toThrowError(CustomError);
+    });
+  });
+  describe("deleteRegion", () => {
+    it("should delete a region", async () => {
+      const regionId = "123";
+
+      jest.spyOn(RegionModel, "findByIdAndDelete").mockResolvedValueOnce(true);
+
+      const result = await regionService.deleteRegion(regionId);
+
+      expect(result).toBe(true);
+    });
+
+    it("should throw an error if deletion fails", async () => {
+      const regionId = "123";
+
+      jest
+        .spyOn(RegionModel, "findByIdAndDelete")
+        .mockRejectedValueOnce(new Error("Database error"));
+
+      await expect(regionService.deleteRegion(regionId)).rejects.toThrowError(
+        CustomError
+      );
+    });
+  });
+  describe("getRegionContainingCoordinates", () => {
+    it("should return regions containing coordinates", async () => {
+      const latitude = 37;
+      const longitude = -122;
+      const regions: Region[] = [new Region()];
+
+      jest.spyOn(RegionModel, "find").mockResolvedValueOnce(regions as any);
+
+      const result = await regionService.getRegionContainingCoordinates(
+        latitude,
+        longitude
+      );
+
+      expect(result).toEqual(regions);
+    });
+
+    it("should throw an error if retrieval fails", async () => {
+      const latitude = 37;
+      const longitude = -122;
+
+      jest
+        .spyOn(RegionModel, "find")
+        .mockRejectedValueOnce(new Error("Database error"));
+
+      await expect(
+        regionService.getRegionContainingCoordinates(latitude, longitude)
+      ).rejects.toThrowError(CustomError);
+    });
+  });
+  describe("getRegionNearCoordinates", () => {
+    it("should return regions near coordinates", async () => {
+      const latitude = 37;
+      const longitude = -122;
+      const maxDistance = 1000;
+      const userId = "123";
+      const regions: Region[] = [new Region()];
+
+      jest
+        .spyOn(RegionModel, "aggregate")
+        .mockResolvedValueOnce(regions as any);
+
+      const result = await regionService.getRegionNearCoordinates(
+        latitude,
+        longitude,
+        maxDistance,
+        userId
+      );
+
+      expect(result).toEqual(regions);
+    });
+
+    it("should throw an error if retrieval fails", async () => {
+      const latitude = 37;
+      const longitude = -122;
+      const maxDistance = 1000;
+      const userId = "123";
+
+      jest
+        .spyOn(RegionModel, "aggregate")
+        .mockRejectedValueOnce(new Error("Database error"));
+
+      await expect(
+        regionService.getRegionNearCoordinates(
+          latitude,
+          longitude,
+          maxDistance,
+          userId
+        )
+      ).rejects.toThrowError(CustomError);
     });
   });
 });
