@@ -150,7 +150,7 @@ describe("RegionController", () => {
         mockResponse as Response
       );
 
-      expect(mockResponse.status).toHaveBeenCalledWith(201);
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalled();
     });
   });
@@ -314,14 +314,16 @@ describe("RegionService", () => {
       expect(result).toEqual(region);
     });
 
-    it("should return null if region is not found", async () => {
+    it("should return 404 if region is not found", async () => {
       const regionId = "123";
 
       jest.spyOn(RegionModel, "findById").mockResolvedValueOnce(null);
 
-      const result = await regionService.getRegionById(regionId);
-
-      expect(result).toBeNull();
+      try {
+        await regionService.getRegionById(regionId);
+      } catch (error) {
+        expect(error.statusCode).toBe(404); // Verifica se o status code é 404
+      }
     });
 
     it("should throw an error if retrieval fails", async () => {

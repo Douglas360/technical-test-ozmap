@@ -4,7 +4,6 @@ import { CustomError } from "../utils/customError";
 import lib from "../utils/lib";
 
 class UserService {
-  // Criar um novo usuário
   async createUser(userData: User): Promise<User> {
     try {
       // Valida os dados do usuário
@@ -41,7 +40,6 @@ class UserService {
     }
   }
 
-  // Obter todos os usuários
   async getAllUsers(): Promise<User[]> {
     try {
       const users = await UserModel.find();
@@ -51,7 +49,6 @@ class UserService {
     }
   }
 
-  // Obter um usuário por ID
   async getUserById(userId: string): Promise<User> {
     try {
       this.validadeUserID(userId);
@@ -66,7 +63,6 @@ class UserService {
     }
   }
 
-  // Atualizar um usuário existente
   async updateUser(userId: string, userData: Partial<User>): Promise<User> {
     try {
       this.validateUserDataUpdate(userData);
@@ -95,7 +91,6 @@ class UserService {
     }
   }
 
-  // Excluir um usuário
   async deleteUser(userId: string) {
     try {
       this.validateUserDelete(userId);

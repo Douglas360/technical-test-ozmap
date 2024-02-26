@@ -48,7 +48,6 @@ class UserController {
       return response.status(201).json(user);
     } catch (error: any) {
       if (error instanceof CustomError) {
-        //console.log(error.statusCode);
         return response.status(error.statusCode).json({ eror: error.message });
       }
     }

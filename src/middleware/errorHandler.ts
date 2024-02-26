@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import winston from "winston";
 
-//Configuração do logger
+//Looger configuration
 const logger = winston.createLogger({
   level: "error",
   format: winston.format.combine(
@@ -9,10 +9,7 @@ const logger = winston.createLogger({
     winston.format.json()
   ),
 
-  transports: [
-    //new winston.transports.Console({ format: winston.format.simple() }), //Caso queira logar no console
-    new winston.transports.File({ filename: "error.log" }),
-  ],
+  transports: [new winston.transports.File({ filename: "error.log" })],
 });
 
 const errorHandler = (
@@ -21,17 +18,17 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  // Loga o erro
+  // Console error
   logger.error(err.message);
 
-  // Verifica se o erro é uma instância de erro personalizado (por exemplo, ValidationError)
+  // Verify if the error is a custom error
   if (err instanceof Error) {
     return res.status(res.statusCode).json({
       eror: err.message,
     });
   }
 
-  // Se não for um erro personalizado, retorna um erro genérico 500
+  // If the error is not a custom error, return a 500 error
   return res.status(500).json({ error: "Internal Server Error" });
 };
 

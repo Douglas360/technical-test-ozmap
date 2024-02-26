@@ -76,8 +76,6 @@ export class Region extends Base {
   @Prop({ ref: () => User, required: true, type: () => String })
   user: Ref<User>;
 
-  /*@Prop({ required: true })
-  coordinates: number[][][];*/
   @Prop({
     required: true,
     index: "2dsphere",

@@ -3,7 +3,6 @@ import { Types } from "mongoose";
 import { CustomError } from "../utils/customError";
 
 class RegionService {
-  // Criar uma nova região
   async createRegion(regionData: Region): Promise<Region> {
     try {
       // Valida os dados da região
@@ -19,31 +18,31 @@ class RegionService {
 
       return region;
     } catch (error: any) {
-      throw new CustomError(error.message, 400);
+      throw new CustomError(error.message, error.statusCode || 999);
     }
   }
 
-  // Obter todas as regiões
   async getAllRegions(): Promise<Region[]> {
     try {
       const regions = await RegionModel.find();
       return regions;
     } catch (error: any) {
-      throw new CustomError(error.message, 400);
+      throw new CustomError(error.message, error.statusCode || 999);
     }
   }
 
-  // Obter uma região por ID
   async getRegionById(regionId: string): Promise<Region | null> {
     try {
       const region = await RegionModel.findById(regionId);
+      if (!region) {
+        throw new CustomError("Region not found", 404);
+      }
       return region;
     } catch (error: any) {
-      throw new CustomError(error.message, 400);
+      throw new CustomError(error.message, error.statusCode || 999);
     }
   }
 
-  // Atualizar uma região existente
   async updateRegion(
     regionId: string,
     regionData: Partial<Region>
@@ -56,11 +55,10 @@ class RegionService {
       });
       return region;
     } catch (error: any) {
-      throw new CustomError(error.message, 400);
+      throw new CustomError(error.message, error.statusCode || 999);
     }
   }
 
-  // Excluir uma região
   async deleteRegion(regionId: string): Promise<boolean> {
     try {
       // Valida o ID da região
@@ -72,7 +70,7 @@ class RegionService {
 
       return true;
     } catch (error: any) {
-      throw new CustomError(error.message, 400);
+      throw new CustomError(error.message, error.statusCode || 999);
     }
   }
 
@@ -103,11 +101,11 @@ class RegionService {
 
       return regions;
     } catch (error: any) {
-      throw new CustomError(error.message, 400);
+      throw new CustomError(error.message, error.statusCode || 400);
     }
   }
 
-  // Listar regiões a uma certa distância de um ponto
+  // Get regions near coordinates
   async getRegionNearCoordinates(
     longitude: number,
     latitude: number,
@@ -115,7 +113,6 @@ class RegionService {
     userId: string | Types.ObjectId
   ): Promise<Region[]> {
     try {
-      // Valida as coordenadas
       this.validateRegionNearCoordinates(
         longitude,
         latitude,
@@ -129,12 +126,12 @@ class RegionService {
               type: "Point",
               coordinates: [longitude, latitude],
             },
-            distanceField: "distance", // Opcional: armazenar a distância nos resultados
+            distanceField: "distance",
             maxDistance: maxDistance,
-            spherical: true, // Se aplicável
+            spherical: true,
           },
         },
-        { $match: { user: userId } }, // Filtrar por usuário após geoNear
+        { $match: { user: userId } }, // Filter by user
       ]);
 
       if (regions.length === 0) {
@@ -143,11 +140,11 @@ class RegionService {
 
       return regions;
     } catch (error: any) {
-      throw new CustomError(error.message, 400);
+      throw new CustomError(error.message, error.statusCode || 400);
     }
   }
 
-  /*METODOS VALIDADORES */
+  /*METHOD VALIDATIONS */
   private validateRegionData(regionData: Region) {
     if (!regionData.name) {
       throw new CustomError("Name is required", 400);
