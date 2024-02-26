@@ -11,4 +11,13 @@ const init = async function () {
   }
 };
 
-export default init();
+const close = async function () {
+  try {
+    await mongoose.disconnect();
+    console.log("Disconnected from MongoDB");
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export { init, close }; // Exporta a função init sem executá-la imediatamente

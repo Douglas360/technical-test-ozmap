@@ -14,6 +14,11 @@ const userController = new UserController(userService);
 const regionService = new RegionService();
 const regionController = new RegionController(regionService);
 
+/*Rota para teste */
+router.get("/", (req, res) => {
+  res.status(200).send("Hello World!");
+});
+
 /*Rotas para sessão */
 router.post("/session", sessionController.create);
 

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { UserController } from "../../src/controllers/UserController";
-import { UserService } from "../../src/services/UserService";
-import { User, UserModel } from "../../src/models/models";
+import { UserController } from "../controllers/UserController";
+import { UserService } from "../services/UserService";
+import { User, UserModel } from "../models/models";
 import lib from "../utils/lib";
 import { CustomError } from "../utils/customError";
 
