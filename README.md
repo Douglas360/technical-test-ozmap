@@ -1,3 +1,30 @@
+# Orientações para rodar o projeto:
+
+Para rodar o projeto localmente, siga essa etapas:
+**1**: Instalar dependências
+
+```bash
+yarn install
+```
+
+**2**: Configurar variáveis de ambiente
+
+SERVER_PORT: Porta na qual o servidor será executado.
+MONGODB_URI: URI de conexão com o MongoDB.
+JWT_SECRET: Chave secreta para assinar os tokens JWT.
+
+**3**: Iniciar Container Docker para Conexão com o Banco de Dados:
+
+```bash
+docker-compose up -d
+```
+
+**4**: Iniciar Projeto:
+
+```bash
+yarn dev
+```
+
 # OZmap Challenge: Construindo a Geolocalização do Futuro
 
 Olá desenvolvedor(a)! Bem-vindo(a) ao Desafio Técnico do OZmap. Este é um projeto que simula um cenário real de nossa empresa, onde você irá desempenhar um papel crucial ao desenvolver uma API RESTful robusta para gerenciar usuários e localizações. Estamos muito animados para ver sua abordagem e solução!
@@ -18,6 +45,7 @@ Em um mundo conectado e globalizado, a geolocalização se torna cada vez mais e
 ## 🔍 **Funcionalidades Esperadas**
 
 ### Usuários
+
 - **CRUD** completo para usuários.
 - Cada usuário deve ter nome, email, endereço e coordenadas.
 - Na criação, o usuário pode fornecer endereço ou coordenadas. Haverá erro caso forneça ambos ou nenhum.
@@ -25,6 +53,7 @@ Em um mundo conectado e globalizado, a geolocalização se torna cada vez mais e
 - Atualização de endereço ou coordenadas deve seguir a mesma lógica.
 
 ### Regiões
+
 - **CRUD** completo para regiões.
 - Uma região é definida como um polígono em GeoJSON, um formato padrão para representar formas geográficas. Cada região tem um nome, um conjunto de coordenadas que formam o polígono, e um usuário que será o dono da região.
 - Listar regiões contendo um ponto específico.
@@ -45,6 +74,7 @@ Em um mundo conectado e globalizado, a geolocalização se torna cada vez mais e
   ```
 
 ### Testes
+
 - Unitários e de integração.
 
 ## 🌟 **Diferenciais**
