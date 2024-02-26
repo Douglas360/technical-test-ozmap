@@ -1,1 +1,39 @@
-{"level":"error","message":"Erro ao obter as coordenadas","timestamp":"2024-02-24T18:25:36.697Z"}
+{"level":"error","message":"User already exists!","timestamp":"2024-02-26T13:25:05.042Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:25:05.076Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:25:05.105Z"}
+{"level":"error","message":"User not found!","timestamp":"2024-02-26T13:25:06.026Z"}
+{"level":"error","message":"Region not found","timestamp":"2024-02-26T13:25:09.825Z"}
+{"level":"error","message":"Region not found","timestamp":"2024-02-26T13:25:09.856Z"}
+{"level":"error","message":"User already exists!","timestamp":"2024-02-26T13:26:32.775Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:26:32.807Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:26:32.833Z"}
+{"level":"error","message":"User not found!","timestamp":"2024-02-26T13:26:33.804Z"}
+{"level":"error","message":"User already exists!","timestamp":"2024-02-26T13:29:18.387Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:29:18.425Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:29:18.460Z"}
+{"level":"error","message":"User not found!","timestamp":"2024-02-26T13:29:19.408Z"}
+{"level":"error","message":"User already exists!","timestamp":"2024-02-26T13:29:45.692Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:29:45.721Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:29:45.744Z"}
+{"level":"error","message":"User not found!","timestamp":"2024-02-26T13:29:46.707Z"}
+{"level":"error","message":"User not found!","timestamp":"2024-02-26T13:32:33.013Z"}
+{"level":"error","message":"User not found!","timestamp":"2024-02-26T13:33:28.141Z"}
+{"level":"error","message":"User not found!","timestamp":"2024-02-26T13:41:59.925Z"}
+{"level":"error","message":"User already exists!","timestamp":"2024-02-26T13:43:13.170Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:43:13.211Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:43:13.240Z"}
+{"level":"error","message":"User already exists!","timestamp":"2024-02-26T13:47:27.953Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:47:27.991Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:47:28.027Z"}
+{"level":"error","message":"User already exists!","timestamp":"2024-02-26T13:48:20.328Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:48:20.362Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:48:20.394Z"}
+{"level":"error","message":"User already exists!","timestamp":"2024-02-26T13:48:47.154Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:48:47.188Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:48:47.213Z"}
+{"level":"error","message":"User already exists!","timestamp":"2024-02-26T13:50:05.851Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:50:05.933Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:50:05.975Z"}
+{"level":"error","message":"User already exists!","timestamp":"2024-02-26T13:52:57.424Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:52:57.467Z"}
+{"level":"error","message":"Only one of address or coordinates should be passed!","timestamp":"2024-02-26T13:52:57.517Z"}

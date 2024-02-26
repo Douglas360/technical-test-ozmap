@@ -2,13 +2,13 @@ import express from "express";
 import bodyParser from "body-parser";
 import "express-async-errors";
 import { router } from "./routes";
-import { init } from "./database";
+import { initDb } from "./database";
 import errorHandler from "./middleware/errorHandler";
 
 const path = require("path");
 
 // Inicializa a conexão com o banco de dados
-init();
+initDb();
 
 const app = express();
 

@@ -26,7 +26,7 @@ const errorHandler = (
 
   // Verifica se o erro é uma instância de erro personalizado (por exemplo, ValidationError)
   if (err instanceof Error) {
-    return res.status(400).json({
+    return res.status(res.statusCode).json({
       eror: err.message,
     });
   }

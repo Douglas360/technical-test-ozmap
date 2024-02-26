@@ -37,7 +37,7 @@ class UserService {
       const user = await UserModel.create(userData);
       return user;
     } catch (error: any) {
-      throw new CustomError(error.message, 400);
+      throw new CustomError(error.message, error.statusCode || 999);
     }
   }
 
@@ -47,7 +47,7 @@ class UserService {
       const users = await UserModel.find();
       return users;
     } catch (error: any) {
-      throw new CustomError(error.message, 400);
+      throw new CustomError(error.message, error.statusCode || 999);
     }
   }
 
@@ -62,7 +62,7 @@ class UserService {
       }
       return user;
     } catch (error: any) {
-      throw new CustomError(error.message, 400);
+      throw new CustomError(error.message, error.statusCode || 999);
     }
   }
 
@@ -91,7 +91,7 @@ class UserService {
 
       return updatedUser;
     } catch (error: any) {
-      throw new CustomError(error.message, 400);
+      throw new CustomError(error.message, error.statusCode || 999);
     }
   }
 
@@ -108,7 +108,7 @@ class UserService {
 
       return { message: "User deleted successfully" };
     } catch (error: any) {
-      throw new CustomError(error.message, 400);
+      throw new CustomError(error.message, error.statusCode || 999);
     }
   }
 

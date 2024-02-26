@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const init = async function () {
+const initDb = async function () {
   try {
     await mongoose.connect(process.env.MONGODB_URI as string);
     console.log("Connected to MongoDB");
@@ -11,7 +11,7 @@ const init = async function () {
   }
 };
 
-const close = async function () {
+const closeDb = async function () {
   try {
     await mongoose.disconnect();
     console.log("Disconnected from MongoDB");
@@ -20,4 +20,13 @@ const close = async function () {
   }
 };
 
-export { init, close }; // Exporta a função init sem executá-la imediatamente
+const clearDb = async function () {
+  try {
+    await mongoose.connection.db.dropDatabase();
+    console.log("Database Cleared");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { initDb, closeDb, clearDb };
