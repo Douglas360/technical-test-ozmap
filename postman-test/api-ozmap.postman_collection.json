@@ -1,0 +1,178 @@
+{
+	"info": {
+		"_postman_id": "0185b996-1c01-4722-b521-088de5ae29f9",
+		"name": "api-ozmap",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24047118"
+	},
+	"item": [
+		{
+			"name": "Create user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \r\n    \"name\": \"John DoeUpdate\",\r\n    \"email\": \"john@example.com\",\r\n    \"password\":\"123\",\r\n    \"address\":\"Rua XV de Novembro, 1500, Curitiba\"\r\n   \r\n  \r\n    \r\n \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3001/user",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login - Create Session",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"john@example.com\",\r\n    \"password\":\"123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3001/session",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"session"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Region",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZGNlNmFhMmVlNmMxOTYxY2YxOTM3NSIsImlhdCI6MTcwODk3NTc5MSwiZXhwIjoxNzA5MDYyMTkxfQ.qdM5LwgkFzn4pGXkA-RSIbVr1QYlFj9WICaFtNZivwo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"New York\",  \r\n  \"geometry\": {\r\n    \"type\": \"Polygon\",\r\n    \"coordinates\": [\r\n      [\r\n        [-74.2591, 40.4774],\r\n                [-73.7002, 40.4774],\r\n                [-73.7002, 40.9176],\r\n                [-74.2591, 40.9176],\r\n                [-74.2591, 40.4774]\r\n      ]\r\n    ]\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3001/region",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"region"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Region Containing Coordinates",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Washington DC\",\r\n  \"user\": \"65d8d7a22cb94b353c3f965a\",\r\n  \"geometry\": {\r\n    \"type\": \"Polygon\",\r\n    \"coordinates\": [\r\n      [\r\n        [-77.1198, 38.7916],\r\n        [-77.0387, 38.7916],\r\n        [-77.0387, 38.9955],\r\n        [-77.1198, 38.9955],\r\n        [-77.1198, 38.7916]\r\n      ]\r\n    ]\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3001/regions?latitude=40.7128&longitude=-74.0060",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"regions"
+					],
+					"query": [
+						{
+							"key": "latitude",
+							"value": "40.7128"
+						},
+						{
+							"key": "longitude",
+							"value": "-74.0060"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Region Near Coordinates",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3001/regions/near?latitude=40.7128&longitude=-74.0060&maxDistance=100000&userId=65dcbb699c933ad34c69b94a",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"regions",
+						"near"
+					],
+					"query": [
+						{
+							"key": "latitude",
+							"value": "40.7128"
+						},
+						{
+							"key": "longitude",
+							"value": "-74.0060"
+						},
+						{
+							"key": "maxDistance",
+							"value": "100000"
+						},
+						{
+							"key": "userId",
+							"value": "65dcbb699c933ad34c69b94a"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
